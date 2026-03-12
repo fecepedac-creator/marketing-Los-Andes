@@ -1,0 +1,20 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == "admin@centromedicolosandes.cl";
+    }
+
+    match /branding/{allPaths=**} {
+      allow read, write: if isAdmin();
+    }
+
+    match /capsules/{capsuleId}/{formatType}/{fileName} {
+      allow read, write: if isAdmin();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
